@@ -1,4 +1,3 @@
-//TODO define Users schema.
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -24,7 +23,9 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    gender: {},
+    gender: {
+      type : String
+    },
 
     metaData: {
       rideType: String,
@@ -35,7 +36,7 @@ const userSchema = new Schema(
       },
       verificationToken: String,
       verificationTokenExpiration: String,
-      rating: String,
+      rating: Number,
     },
 
     license: String,
