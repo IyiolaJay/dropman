@@ -49,9 +49,13 @@ const userSchema = new Schema(
     imageUrl: {
       type: String,
     },
-    userType: String,
+    userType: {
+      type : String,
+      required : true,
+      enum : ['customer', 'rider']
+    },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Users", userSchema);
+module.exports = mongoose.model("User", userSchema);
