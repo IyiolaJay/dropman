@@ -2,17 +2,15 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/auth");
 const { body } = require("express-validator");
-const authorize = require("../middlewares/auth");
+// const authorize = require("../middlewares/auth");
 
 //TODO create routes to handle user signup, login, logout.
 
 router.post(
   "/create",
   [
-    body("email")
-      .isEmail()
-      .withMessage("please enter a valid email")
-      .normalizeEmail(),
+    body("email").isEmail().withMessage("please enter a valid email").trim(),
+
     body("firstName", "Please enter a valid first name")
       .not()
       .isEmpty()
@@ -33,9 +31,22 @@ router.post(
       .isAlphanumeric()
       .isLength({ min: 6 }),
   ],
-  authController.postCreateAccount
+  authController.createAccount
 );
 
-router.post('login');
+router.post(
+  "/login",
+  [
+    body("email").isEmail().withMessage("please enter a valid email").trim(),
+    body(
+      "password",
+      `Please enter a password of at least 
+  6 characters long and contains alphanumeric`
+    )
+      .isAlphanumeric()
+      .isLength({ min: 6 }),
+  ],
+  authController.userLogin
+);
 
 module.exports = router;
