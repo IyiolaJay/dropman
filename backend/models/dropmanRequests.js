@@ -34,6 +34,7 @@ const addressSchema = new Schema({
     type: String,
     enum: ["Point"],
     required: true,
+    default: "Point",
   },
   coordinates: {
     type: [Number],
@@ -48,7 +49,6 @@ const addressSchema = new Schema({
     },
     trackingNumber: {
       type: Schema.Types.ObjectId,
-      required: true,
     },
   },
 });
@@ -58,26 +58,26 @@ const requestSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
-  address: {
-    pickup: {
+  pickUp: {
+    type: addressSchema,
+    required: true,
+  },
+  delivery: [
+    {
       type: addressSchema,
       required: true,
     },
-    delivery: [
-      {
-        type: addressSchema,
-        required: true,
-      },
-    ],
-  },
+  ],
+
   amount: {
     type: Number,
     required: true,
   },
   requestStatus: {
     type: String,
-    enum: ["accepted", "pending", "delivered"],
+    enum: ["accepted", "transit", "delivered", "requested"],
     required: true,
+    default: "requested"
   },
   riderId: {
     type: Schema.Types.ObjectId,
@@ -103,4 +103,4 @@ requestSchema.index(
   { expireAfterSeconds: 7200, partialFilterExpression: { riderId: null } }
 );
 
-module.exports = mongoose.model('Request', requestSchema);
+module.exports = mongoose.model("Request", requestSchema);

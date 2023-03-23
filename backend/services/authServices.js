@@ -13,5 +13,5 @@ exports.verifyPassword = async (enteredPassword, password) => {
 };
 
 exports.createJwt = (payload) => {
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "4h" });
 };

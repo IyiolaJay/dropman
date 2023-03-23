@@ -44,8 +44,8 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(URI)
   .then((result) => {
-    app.listen(3000);
-    console.log(`Connected Successfully to ${result.connections[0].host}`);
+    app.listen(process.env.PORT || 3000);
+    console.log(`Connected Successfully to port ${process.env.PORT || 3000}`);
   })
   .catch((err) => {
     console.log("Error Occurred:  ", err);
