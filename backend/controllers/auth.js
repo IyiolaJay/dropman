@@ -3,7 +3,9 @@ const { validationResult } = require("express-validator");
 const {
   genHashedPassword,
   verifyPassword,
+  createJwt,
 } = require("../services/authServices");
+const { sendToMail } = require("../services/emailServices");
 
 //utility function for validation
 const checkValidationError = (req) => {
@@ -15,11 +17,10 @@ const checkValidationError = (req) => {
   }
 };
 
-
 //@description : create user account
 //@route :  = /auth/create
 //@access : public
-exports.postCreateAccount = async (req, res, next) => {
+exports.createAccount = async (req, res, next) => {
   const userType = req.query.userType;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
@@ -29,9 +30,8 @@ exports.postCreateAccount = async (req, res, next) => {
   const password = req.body.password;
   const sendEmail = req.query.email;
 
-
-  if(req.body.metaData && req.body.metaData.rideType){
-  const rideType = req.body.metaData.rideType;
+  if (req.body.metaData && req.body.metaData.rideType) {
+    const rideType = req.body.metaData.rideType;
   }
 
   let user;
@@ -39,8 +39,8 @@ exports.postCreateAccount = async (req, res, next) => {
     checkValidationError(req);
 
     const checkUser = await User.findOne({ email: email });
-    console.log(checkUser);
-    
+    console.log("Here: ", checkUser);
+
     if (checkUser) {
       throw new Error(`User already exists as a ${checkUser.userType}`);
     }
@@ -71,15 +71,70 @@ exports.postCreateAccount = async (req, res, next) => {
       });
     }
 
+    if (!sendEmail) {
+      const receiver = {
+        to: email,
+        subject: "Welcome, Your account has been created",
+      };
+      await sendToMail(receiver);
+    }
+
     const createUser = await user.save();
 
-    
-
-    //TODO send email to user after creation 
-
-    res.status(201).json({
+    return res.status(201).json({
+      success: true,
       message: "Account successfully created",
       user: createUser,
+    });
+  } catch (err) {
+    if (err.code === 11000 && err.keyPattern && err.keyValue) {
+      const field = Object.keys(err.keyValue)[0];
+      const value = err.keyValue[field];
+      err.message = `A user with ${field} "${value}" already exists.`;
+    }
+
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+
+//@description : create user account
+//@route :  = /auth/login
+//@access : public
+exports.userLogin = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  
+  try {
+    checkValidationError(req);
+    const findUser = await User.findOne({ email: email });
+    if (!findUser) {
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const passwordCompare = verifyPassword(password, findUser.password);
+    if (!passwordCompare) {
+      const error = new Error("Invalid email or password");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const payload = {
+      email: email,
+      userId: findUser._id,
+      userType: findUser.userType,
+    };
+    const token = createJwt(payload);
+    res.status(200).json({
+      success: true,
+      message: "Successfully logged in",
+      token: token,
+      user: findUser.email,
     });
   } catch (err) {
     if (!err.statusCode) {

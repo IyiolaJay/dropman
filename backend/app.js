@@ -36,6 +36,7 @@ app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
   const message = error.message;
   res.status(status).json({
+    success : false,
     message: message,
   });
 });
@@ -43,8 +44,8 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(URI)
   .then((result) => {
-    app.listen(3000);
-    console.log(`Connected Successfully to ${result.connections[0].host}`);
+    app.listen(process.env.PORT || 3000);
+    console.log(`Connected Successfully to port ${process.env.PORT || 3000}`);
   })
   .catch((err) => {
     console.log("Error Occurred:  ", err);
