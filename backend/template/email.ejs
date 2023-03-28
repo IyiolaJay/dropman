@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Welcome to Dropman</title>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #fff;
+        max-width: 80%;
+        margin: 0 auto;
+      }
+      header {
+        position: relative;
+        padding: 20px;
+      }
+      .logo {
+        position: absolute;
+        width: 74px;
+        height: 21px;
+        left: 22px;
+        top: 29px;
+      }
+      main {
+        position: relative;
+        padding: 20px;
+        margin: 0px auto;
+        max-width: 600px;
+      }
+      button {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 16px 53px;
+        gap: 10px;
+        margin: 15px 0px;
+        position: absolute;
+        width: 96px;
+        height: 25px;
+        left: 20px;
+        top: 141px;
+        background-color: #000000;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 8px;
+        border: none;
+        color: white;
+        font-size: 16px;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      a {
+        color: white;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="placeholder_logo.png" alt="Dropman logo" class="logo" />
+    </header>
+    <main>
+      <p>Dear <%= name%>,</p>
+      <p>
+        Welcome to Dropman, the fastest and most reliable delivery service app!
+        With Dropman, you can easily order food, groceries, medicine, and other
+        essentials from your favorite stores and get them delivered straight to
+        your doorstep.
+      </p>
+      <button>
+        <a href="https://example.com/verify/<%= token %>">Verify your email</a>
+      </button>
+      <p>
+        Here are some of the features that make Dropman unique and
+        user-friendly:
+      </p>
+      <ul>
+        <li>User-friendly interface</li>
+        <li>Fast and reliable delivery</li>
+        <li>Secure and safe handling of your packages</li>
+        <li>Multiple payment options</li>
+      </ul>
+      <p>
+        If you have any suggestions or feedback, please feel free to reach out
+        to us. Thank you for choosing Dropman as your delivery partner.
+      </p>
+      <p>Best regards,</p>
+      <p>Daudu</p>
+      <p>The Dropman Team</p>
+    </main>
+  </body>
+</html>

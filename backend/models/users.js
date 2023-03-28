@@ -34,17 +34,16 @@ const userSchema = new Schema(
 
     metaData: {
       rideType: { type: String, enum: ["bike", "truck"]},
+      rating: Number,
       verificationStatus: {
         type: Boolean,
         required: true,
         default: false,
       },
-      verificationToken: String,
-      verificationTokenExpiration: String,
-      rating: Number,
+      // token: String,
+      // tokenExpiration: String,
     },
 
-    license: String,
     restriction: {
       restricted: Boolean,
       count: String,

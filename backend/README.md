@@ -60,9 +60,10 @@ To use the API, send requests to the appropriate endpoints with the necessary pa
 
 ## End Points
 
-`GET /api/auth/create`  `public`
+`POST /api/auth/create`  `public`
 
-### Create a customer account.
+### Create an account.
+-Create customer account
 ```js
     /api/auth/create?userType=customer
 ```
@@ -78,7 +79,7 @@ To use the API, send requests to the appropriate endpoints with the necessary pa
 }
 ```
 
-Create a rider account.
+-Create a rider account.
 ```js
     /api/auth/create?userType=rider
 ```
@@ -113,4 +114,69 @@ Create a rider account.
 | userType | none | no | {"customer or rider"} |
 
 
+### Login an account.
+`POST /api/auth/login`  `public`
 
+```js
+    /api/auth/login
+```
+- Request body
+```js
+{
+    "email" : "someemail@gmail.com",
+    "password" : "somepassword"
+}
+```
+
+- Note : The `login` will return a jwt token.
+
+### Request for a ride.
+`POST /api/customer/request` `requires auth`
+
+```js
+    /api/customer/create
+```
+
+- Request body
+```js
+{
+    "pickUp" : {
+        "coordinates":[6.550991210994359, 3.383910944535353]
+        },
+    "delivery" : {
+        "coordinates" : [6.551364268302928, 3.384035667257561],
+        "deliveryData" :  {
+                "recipientName" : "Jay Jay",
+                "recipientPhone" : "+2348123456789"
+        }
+    
+    }
+}
+```
+ Delivery can have multiple address. The maximum number of addresses per one request is 3. Customers can only have total number of 2 individual requests in the database, and will not be able to add new requests until after delivery or expiration. 
+
+- When customers have multiple delivery address, delivery property should be an array of addresses
+`for multiple delivery address`
+- Request body
+```js
+{
+    "pickUp" : {
+        "coordinates":[6.550991210994359, 3.383910944535353]
+        },
+    "delivery" : [{
+        "coordinates" : [6.551364268302928, 3.384035667257561],
+        "deliveryData" :  {
+                "recipientName" : "Jay Jay",
+                "recipientPhone" : "+2348123456789"
+        }
+    
+    },{
+        "coordinates" : [6.551364268302928, 3.384035667257561],
+        "deliveryData" :  {
+                "recipientName" : "Jay Jay",
+                "recipientPhone" : "+2348123456789"
+        }
+    
+    }]
+}
+```
