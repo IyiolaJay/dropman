@@ -1,5 +1,10 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
+const path = require('path')
+const ejs = require('ejs');
+
+
+const templatePath = path.join(__dirname, "..", "template", "email.ejs");
 
 const Transport = nodemailer.createTransport({
   service: "gmail",
@@ -12,13 +17,12 @@ const Transport = nodemailer.createTransport({
 
 exports.sendToMail = async (mailBody) => {
   try {
+    const html = await ejs.renderFile(templatePath, { token: mailBody.token, name : "hammed" });
     const mail = await Transport.sendMail({
       from: process.env.USER,
       to: mailBody.to,
       subject: mailBody.subject,
-      html: `<p>Your account has been created successfully</p>
-            <p>Welcome to Dropman</p>
-          `,
+      html: html,
     });
     return mail;
   } catch (error) {
@@ -28,3 +32,5 @@ exports.sendToMail = async (mailBody) => {
     // next(err);
   }
 };
+
+

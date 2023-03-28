@@ -6,16 +6,8 @@ const {
   createJwt,
 } = require("../services/authServices");
 const { sendToMail } = require("../services/emailServices");
-
-//utility function for validation
-const checkValidationError = (req) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const error = new Error(errors.array()[0].msg);
-    error.statusCode = 422;
-    throw error;
-  }
-};
+const { checkValidationError } = require("../utils/helper");
+const { createTokenHash, createOtpToken } = require("../services/tokenService");
 
 //@description : create user account
 //@route :  = /auth/create
@@ -39,7 +31,6 @@ exports.createAccount = async (req, res, next) => {
     checkValidationError(req);
 
     const checkUser = await User.findOne({ email: email });
-    console.log("Here: ", checkUser);
 
     if (checkUser) {
       throw new Error(`User already exists as a ${checkUser.userType}`);
@@ -81,35 +72,37 @@ exports.createAccount = async (req, res, next) => {
 
     const createUser = await user.save();
 
-    return res.status(201).json({
+    res.status(201).json({
       success: true,
       message: "Account successfully created",
       user: createUser,
     });
+    // return;
   } catch (err) {
     if (err.code === 11000 && err.keyPattern && err.keyValue) {
       const field = Object.keys(err.keyValue)[0];
       const value = err.keyValue[field];
       err.message = `A user with ${field} "${value}" already exists.`;
+      return err;
     }
 
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
+    return err;
   }
 };
 
-
-//@description : create user account
+//@description : login user account
 //@route :  = /auth/login
 //@access : public
 exports.userLogin = async (req, res, next) => {
   const { email, password } = req.body;
 
-  
   try {
     checkValidationError(req);
+
     const findUser = await User.findOne({ email: email });
     if (!findUser) {
       const error = new Error("User not found");
