@@ -49,4 +49,6 @@ router.post(
   authController.userLogin
 );
 
+router.post('/recover', authController.recoverPassword);
+
 module.exports = router;

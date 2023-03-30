@@ -30,9 +30,15 @@ exports.createAccount = async (req, res, next) => {
   try {
     checkValidationError(req);
 
+    if (!req.query.userType) {
+      const err = new Error("User type must be included");
+      err.statusCode = 422;
+      throw err;
+    }
+
     const checkUser = await User.findOne({ email: email });
 
-    if (checkUser) {
+    if (checkUser && checkUser.userType) {
       throw new Error(`User already exists as a ${checkUser.userType}`);
     }
 
@@ -61,23 +67,25 @@ exports.createAccount = async (req, res, next) => {
         userType: userType,
       });
     }
-
-    if (!sendEmail) {
-      const receiver = {
-        to: email,
-        subject: "Welcome, Your account has been created",
-      };
-      await sendToMail(receiver);
-    }
-
     const createUser = await user.save();
 
-    res.status(201).json({
+    const token = await createTokenHash();
+
+    if (sendEmail !== false) {
+      const mailBody = {
+        to: email,
+        subject: "Welcome, Your account has been created",
+        token: token,
+        name: createUser.firstName + " " + createUser.lastName,
+      };
+      await sendToMail(mailBody);
+    }
+
+    return res.status(201).json({
       success: true,
       message: "Account successfully created",
       user: createUser,
     });
-    // return;
   } catch (err) {
     if (err.code === 11000 && err.keyPattern && err.keyValue) {
       const field = Object.keys(err.keyValue)[0];
@@ -135,4 +143,8 @@ exports.userLogin = async (req, res, next) => {
     }
     next(err);
   }
+};
+
+exports.recoverPassword = (req, res, next) => {
+  const email = req.body.email;
 };

@@ -17,7 +17,7 @@ const Transport = nodemailer.createTransport({
 
 exports.sendToMail = async (mailBody) => {
   try {
-    const html = await ejs.renderFile(templatePath, { token: mailBody.token, name : "hammed" });
+    const html = await ejs.renderFile(templatePath, { body : mailBody });
     const mail = await Transport.sendMail({
       from: process.env.USER,
       to: mailBody.to,
