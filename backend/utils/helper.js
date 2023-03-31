@@ -18,7 +18,7 @@ exports.calculateAmount = (pickup, delivery) => {
   const [lon1, lat1] = pickup;
   let totalDistance = 0;
   delivery.forEach((d) => {
-    const [lon2, lat2] = d.coordinates;
+    const [lon2, lat2] = d.address.coordinates;
 
     const dLat = toRadians(lat2 - lat1);
     const dLon = toRadians(lon2 - lon1);

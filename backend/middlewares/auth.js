@@ -26,5 +26,6 @@ module.exports = (req, res, next) => {
     throw err;
   }
   req.user = isJwtValid.userId;
+  req.userType = isJwtValid.userType;
   next();
 };
