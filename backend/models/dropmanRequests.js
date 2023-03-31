@@ -1,34 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-// The data needed for requesting for a dropman ride will have this structure
 
-/*
-{
-    _id : 1223,
-    customerId : 34,
-    addresses : {
-        pickup : {
-            type : 'Point',
-            coordinates : [-123.8567695, -123.9460709],
-        },
-        delivery : [{
-            type : 'Point',
-            coordinates : [-123.8567695, -123.9460709],
-            deliveryData : {
-                recipientName : 'Jay Orlando',
-                recipientPhoneNumber: '+2348123456789',
-                trackingNumber : 1234658
-            },
-        }],
-    },
-    amount : 1500,
-    requestStatus: accepted,
-    riderId : 12344
-
-
-}
-*/
 const addressSchema = new Schema({
   type: {
     type: String,
@@ -40,7 +13,13 @@ const addressSchema = new Schema({
     type: [Number],
     required: true,
   },
-  deliveryData: {
+});
+
+const deliveryDataSchema = new Schema({
+  address : {
+    type : addressSchema,
+    require : true,
+  },
     recipientName: {
       type: String,
     },
@@ -50,8 +29,7 @@ const addressSchema = new Schema({
     trackingNumber: {
       type: Schema.Types.ObjectId,
     },
-  },
-});
+})
 
 const requestSchema = new Schema({
   customerId: {
@@ -61,10 +39,11 @@ const requestSchema = new Schema({
   pickUp: {
     type: addressSchema,
     required: true,
+
   },
   delivery: [
     {
-      type: addressSchema,
+      type: deliveryDataSchema,
       required: true,
     },
   ],
@@ -84,6 +63,13 @@ const requestSchema = new Schema({
     ref: "User",
     default: null,
   },
+
+  rideType : {
+    type : String,
+    enum : ["bike", "truck"],
+    default : "bike"
+  }
+  ,
   createdAt: {
     type: Date,
     default: Date.now,
@@ -94,8 +80,8 @@ const requestSchema = new Schema({
 });
 
 requestSchema.index({
-  "address.pickup": "2dsphere",
-  "address.delivery": "2dsphere",
+  "pickUp": "2dsphere",
+  "delivery.address": "2dsphere",
 });
 
 requestSchema.index(
@@ -104,3 +90,4 @@ requestSchema.index(
 );
 
 module.exports = mongoose.model("Request", requestSchema);
+

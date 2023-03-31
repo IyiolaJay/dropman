@@ -12,14 +12,14 @@ router.post(
     body("pickUp", "Enter a valid pickup address")
       .not()
       .isEmpty()
-      .custom((value, { req }) => {
+      .custom((value) => {
 
         if (!value.coordinates || !Array.isArray(value.coordinates)) {
          throw new Error("Invalid Pickup data");
         }
 
         if (value.coordinates.length !== 2) {
-          throw new Error("Pickup coordinates must have exactly 2 values");
+          throw new Error("Coordinates should include longitude and latitude");
         }
         return true;
       }),
