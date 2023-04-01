@@ -106,7 +106,6 @@ exports.requestDropman = async (req, res, next) => {
     });
 
     const val = await request.validate();
-    console.log("Validation of schema", val);
 
     const savedReq = await request.save();
 

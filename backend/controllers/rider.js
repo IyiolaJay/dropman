@@ -6,38 +6,54 @@ const { checkValidationError } = require("../utils/helper");
 //@route :  = /rider/view-request
 //@access : requires auth
 exports.findRequests = async (req, res, next) => {
-  // Write code to query the database for request within 3km to the logged in rider
+
   try {
-    // if (!req.body.coordinates) {
-    //     const err = new Error("Please include rider location/coordinates");
-    //     err.statusCode = 422;
-    //     throw err;
-    //   }
     checkValidationError(req);
 
     const riderLocation = req.body.coordinates;
+    const rideType = req.body.rideType;
+
 
     const nearbyRides = await Requests.find({
       pickUp: {
         $near: {
-          $geometry: { type: "Point", coordinates: riderLocation },
-          $minDistance: 1000,
-          $maxDistance: 5000,
+          $geometry: {
+            type: "Point",
+            coordinates: riderLocation,
+          },
+         $maxDistance: 4000,
         },
       },
-      rideType : "bike",
+      rideType: rideType
+
     });
-    console.log(nearbyRides);
+
+    if (nearbyRides.length === 0){
+      return res.status(204).json({
+        success: true,
+        message: "No ride/rideType within the given range",
+      });
+    }
+
+    const rides = nearbyRides.map(rides=>{
+      return {
+        _id : rides._id,
+        pickUp : rides.pickUp,
+        delivery : rides.delivery.address,
+        customer : rides.customerId,
+      }
+    })
+
+
 
     return res.status(200).json({
       success: true,
+      requests: rides,
     });
-
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;
     }
     next(error);
   }
-
 };
