@@ -60,7 +60,7 @@ To use the API, send requests to the appropriate endpoints with the necessary pa
 
 ## End Points
 
-`POST /api/auth/create`  `public`
+`PUT /api/auth/create`  `public`
 
 ### Create an account.
 -Create customer account
@@ -140,17 +140,28 @@ To use the API, send requests to the appropriate endpoints with the necessary pa
 - Request body
 ```js
 {
-    "pickUp" : {
-        "coordinates":[6.550991210994359, 3.383910944535353]
-        },
-    "delivery" : {
-        "coordinates" : [6.551364268302928, 3.384035667257561],
-        "deliveryData" :  {
-                "recipientName" : "Jay Jay",
-                "recipientPhone" : "+2348123456789"
-        }
-    
-    }
+  "pickUp": {
+    "coordinates": [-73.9857, 40.7484]
+  },
+  "delivery": [
+    {
+      "address": {
+        "coordinates": [-73.9879, 40.7486]
+      },
+        "recipientName": "John Doe",
+        "recipientPhone": "+1234567890",
+        "trackingNumber": "6161f162c860b3503df3dd61"
+      },
+       {
+      "address": {
+        "coordinates": [-73.9879, 40.7486]
+      },
+        "recipientName": "John Doe",
+        "recipientPhone": "+1234567890",
+        "trackingNumber": "6161f162c860b3503df3dd61"
+      }
+  ]
+  "rideType": "truck"
 }
 ```
  Delivery can have multiple address. The maximum number of addresses per one request is 3. Customers can only have total number of 2 individual requests in the database, and will not be able to add new requests until after delivery or expiration. 

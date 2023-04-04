@@ -39,6 +39,7 @@ app.use((error, req, res, next) => {
     success : false,
     message: message,
   });
+  // next();
 });
 
 mongoose
