@@ -60,7 +60,7 @@ To use the API, send requests to the appropriate endpoints with the necessary pa
 
 ## End Points
 
-`POST /api/auth/create`  `public`
+`PUT /api/auth/create`  `public`
 
 ### Create an account.
 -Create customer account

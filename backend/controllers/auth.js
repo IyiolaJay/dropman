@@ -8,6 +8,7 @@ const {
 const { sendToMail } = require("../services/emailServices");
 const { checkValidationError } = require("../utils/helper");
 const { createTokenHash, createOtpToken } = require("../services/tokenService");
+const tokenModal = require('../models/otp')
 
 //@description : create user account
 //@route :  = /auth/create
@@ -21,9 +22,10 @@ exports.createAccount = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const sendEmail = req.query.email;
+  let rideType;
 
   if (req.body.metaData && req.body.metaData.rideType) {
-    const rideType = req.body.metaData.rideType;
+    rideType = req.body.metaData.rideType;
   }
 
   let user;
@@ -43,6 +45,7 @@ exports.createAccount = async (req, res, next) => {
     }
 
     const Hash = await genHashedPassword(password);
+
     if (userType === "customer") {
       user = new User({
         firstName: firstName,
@@ -69,9 +72,16 @@ exports.createAccount = async (req, res, next) => {
     }
     const createUser = await user.save();
 
-    const token = await createTokenHash();
-
     if (sendEmail !== false) {
+      const token = await createTokenHash();
+
+      const userToken = new tokenModal({
+        userId : createUser._id,
+        token : token,
+      })
+
+      await userToken.save();
+
       const mailBody = {
         to: email,
         subject: "Welcome, Your account has been created",
@@ -79,19 +89,21 @@ exports.createAccount = async (req, res, next) => {
         name: createUser.firstName + " " + createUser.lastName,
       };
       await sendToMail(mailBody);
+
     }
 
     return res.status(201).json({
       success: true,
       message: "Account successfully created",
-      user: createUser,
+      email: createUser.email,
+      name : createUser.firstName +' '+ createUser.lastName
     });
   } catch (err) {
     if (err.code === 11000 && err.keyPattern && err.keyValue) {
       const field = Object.keys(err.keyValue)[0];
       const value = err.keyValue[field];
+      err.statusCode = 400;
       err.message = `A user with ${field} "${value}" already exists.`;
-      return err;
     }
 
     if (!err.statusCode) {
@@ -145,6 +157,19 @@ exports.userLogin = async (req, res, next) => {
   }
 };
 
-exports.recoverPassword = (req, res, next) => {
+exports.recoverPassword = async (req, res, next) => {
   const email = req.body.email;
 };
+
+
+exports.verifyEmail = async (req, res, next) =>{
+  const token = req.params.token;
+  const userId = req.params.userId
+
+  if(!token){
+    const err = new Error('Token not found');
+    err.statusCode = 422;
+  }
+
+  const verifyToken = await tokenModal.findOne({userId : userId, token : token});
+}

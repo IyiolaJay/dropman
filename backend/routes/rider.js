@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const riderController = require("../controllers/rider");
 const { body } = require("express-validator");
+const isAuth = require('../middlewares/auth');
 
 
 router.post(
@@ -31,5 +32,7 @@ router.post(
   ],
   riderController.findRequests
 );
+
+router.patch('/accept/:requestId', isAuth, riderController.acceptRequest);
 
 module.exports = router;
