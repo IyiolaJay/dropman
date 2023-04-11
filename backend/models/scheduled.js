@@ -1,26 +1,67 @@
 //TODO should handle the following data :
-/*
-{
-    _id : 1223,
-    customerId : 34,
-    addresses : {
-        pickup : {
-            type : 'Point',
-            coordinates : [-123.8567695, -123.9460709],
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const scheduledSchema = new Schema (
+    {
+        customerId: {
+            type: Number,
+            required: true
         },
-        delivery : [{
-            type : 'Point',
-            coordinates : [-123.8567695, -123.9460709],
-            deliveryData : {
-                recipientName : 'Jay Orlando',
-                recipientPhoneNumber: '+2348123456789',
-                trackingNumber : 1234658
+        addresses: {
+            pickUp: {
+                type: {
+                    type: String,
+                    enum: ['Point'],
+                    required: true
+                },
+                coordinates: {
+                    type: [Number],
+                    required: true
+                }
             },
-        }],
-    },
-    amount : 1500,
-    requestStatus: accepted,
-    riderId : 12344
-    scheduledDate : 11-02-2023, //for date data.....,
-}
-*/
+            delivery: [{
+                type: {
+                    type: String,
+                    enum: ['Point'],
+                    required: true
+                },
+                coordinates: {
+                    type: [Number],
+                    required: true
+                } ,
+                deliveryData: {
+                    recipientName: {
+                        type: String,
+                        required: true
+                    },
+                    recipientPhoneNumber: {
+                        type: String,
+                        required: true                        
+                    },
+                    trackingNumber: {
+                        type: Number,
+                        required: true
+                    }
+                }               
+            }]
+        },
+        amount: {
+            type: Number,
+            required: true
+        },
+        requestStatus: {
+            type: String,
+            required: true
+        },
+        riderId: {
+            type: Number
+        },
+        scheduledDate: {
+            type: Date,
+            required: true
+        }
+    }
+);
+
+module.exports = mongoose.model("Scheduled", scheduledSchema);
