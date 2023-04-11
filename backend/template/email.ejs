@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        width: 90%;
+        max-width: 90rem;
+        margin: 2rem 1.7rem;
+        padding: 0.8rem 1rem;
+        background-color: white;
+        font-family: sans-serif;
+      }
+
+      .heading img {
+        width: 10rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .article1 {
+        margin: 1rem 0;
+        line-height: 1.5rem;
+      }
+
+      .article2 {
+        margin: 1.5rem 0;
+        line-height: 1.5rem;
+      }
+
+      .article2 a {
+        text-decoration: none;
+        font: inherit;
+        padding: 0.4rem 3.4rem;
+        border-radius: 15px;
+        background-color: black;
+        color: white;
+        border: 2px solid rgb(0, 0, 0);
+        box-shadow: 1px 4px 8px 0px rgb(0, 0, 0, 0.65);
+      }
+
+      .article2 p {
+        font: inherit;
+        margin-bottom: 0.5rem;
+      }
+
+      .article3 {
+        line-height: 1.5rem;
+      }
+
+      .article3 ul li {
+        margin: 0 2rem;
+      }
+
+      .footer {
+        line-height: 1.5rem;
+        margin: 1rem 0;
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <header class="heading">
+        <img src="/New Dropman black.png" alt="logo" />
+      </header>
+
+      <main class="main">
+        <article class="article1">
+          <p>Dear <%= body.name %></p>
+          <p>
+            Welcome to Dropman, the fastest and most reliable delivery service
+            app! with Dropman, your can easily order food, groceries, medicine,
+            and other essentials from your favorite stores and get them
+            delivered straight to your doorstep.
+          </p>
+        </article>
+
+        <article class="article2">
+          <p>Click the button below to verify your email.</p>
+          <a href="http://127.0.0.1:3000/verify/<%=body.token%>">Verify</a>
+        </article>
+
+        <article class="article3">
+          <p>
+            Here are some of the features that make Dropman unique and
+            user-friendly:
+          </p>
+          <ul>
+            <li>User-friendly interface</li>
+            <li>Fast and reliable delivery</li>
+            <li>Secure and safe handling of your packages</li>
+            <li>Multiple payment options</li>
+          </ul>
+
+          <p>
+            If you have any suggestions or feedback, please feel free to reach
+            out to us. Thank you for choosing Dropman as your delivery partner.
+          </p>
+          <p>Best regards.</p>
+        </article>
+      </main>
+      <footer class="footer">
+        <p>Daudu</p>
+        <p>The Dropman Team</p>
+      </footer>
+    </section>
+  </body>
+</html>

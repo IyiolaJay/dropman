@@ -14,8 +14,13 @@ const userSchema = new Schema(
     phoneNumber: {
       type: String,
       required: true,
+      unique: true
     },
     address: {
+      type: String,
+      required: true,
+    },
+    email: {
       type: String,
       required: true,
     },
@@ -24,22 +29,21 @@ const userSchema = new Schema(
       required: true,
     },
     gender: {
-      type : String
+      type: String,
     },
 
     metaData: {
-      rideType: String,
+      rideType: { type: String, enum: ["bike", "truck"]},
+      rating: Number,
       verificationStatus: {
         type: Boolean,
         required: true,
         default: false,
       },
-      verificationToken: String,
-      verificationTokenExpiration: String,
-      rating: Number,
+      // token: String,
+      // tokenExpiration: String,
     },
 
-    license: String,
     restriction: {
       restricted: Boolean,
       count: String,
@@ -49,9 +53,13 @@ const userSchema = new Schema(
     imageUrl: {
       type: String,
     },
-    userType: String,
+    userType: {
+      type: String,
+      required: true,
+      enum: ["customer", "rider"],
+    },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Users", userSchema);
+module.exports = mongoose.model("User", userSchema);
