@@ -40,11 +40,9 @@ Customers
 - Requests expire after 1 hour of no acceptance.
 - Customers can have multiple locations of deliveries for a single request.
 - Customers can get an estimate for a delivery location.
-- Customers can choose either normal delivery service or express delivery.
 
 Riders
-
-- Riders can accept a maximum of 5 requests at a time.
+- Riders can accept a maximum of 3 requests at a time.
 - Riders will generate an OTP which will be sent to the recipient's phone number to validate delivery.
 - Riders will ignore and won't be able to accept other requests if they haven't reached the limit of 5 until they complete the current delivery.
 

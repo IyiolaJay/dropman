@@ -1,12 +1,15 @@
+require("dotenv").config();
 const Requests = require("../models/dropmanRequests");
+const OTPmodal = require("../models/otp");
+const Order = require("../models/order");
 const { checkValidationError } = require("../utils/helper");
+const AfricasTalking = require("africastalking");
+const { createOtpToken } = require("../services/tokenService");
 
-
-
-
-
-
-
+const africasTalking = new AfricasTalking({
+  apiKey: process.env.AFRICAS_TALKING_APIKEY,
+  username: process.env.AFRICAS_TALKING_USERNAME,
+});
 
 //
 //@description : view ride request
@@ -90,6 +93,14 @@ exports.acceptRequest = async (req, res, next) => {
       throw err;
     }
 
+    if ((await Requests.findOne({ _id: requestId.toString() }).count()) >= 3) {
+      const err = new Error(
+        "This rider cannot accept more requests at this time"
+      );
+      err.statusCode = 406;
+      throw err;
+    }
+
     request.riderId = riderId.toString();
     request.requestStatus = "accepted";
 
@@ -112,3 +123,83 @@ exports.acceptRequest = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.completeDelivery = async (req, res, next) => {
+  try {
+    const requestId = req.body.requestId;
+
+    const request = await Requests.findOne({
+      _id: requestId,
+      riderId: req.user,
+    });
+
+    console.log(request.delivery.address.recipientPhone);
+
+    if (!request) {
+      const err = new Error("Request not found");
+      err.statusCode = 404;
+      throw err;
+    }
+
+    const token = createOtpToken();
+    
+
+    const newToken = new OTPmodal({
+      userId: req.user,
+      token: token,
+      requestId: requestId,
+    });
+
+    await newToken.save();
+
+    const sms = africasTalking.SMS;
+
+    await sms.send({
+      to: request.delivery.address.recipientPhone,
+      message: `Use this token to verify your delivery ${token}, it expires in 15minutes`,
+    });
+
+    return res.status(200).json({
+      success : true,
+      message : 'Sms sent'
+    })
+
+   
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+
+exports.confirmDelivery = async(req, res, next)=>{
+  try{
+    const token = req.body.otp;
+    const requestId = req.body.requestId
+
+    const isToken = OTPmodal.findOne({token : token, requestId : requestId})
+    if(isToken){
+     const completedRequest = Requests.findOne({_id : requestId})
+     completedRequest.requestStatus = "delivered"
+      
+     await completedRequest.save();
+
+     const order = new Order({
+        requestData : completedRequest
+      })
+
+      await order.save();
+    }
+
+    return res.status(200).json({
+      success : true,
+      message : "Request completed"
+    })
+  }catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+}

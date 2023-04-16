@@ -134,7 +134,7 @@ To use the API, send requests to the appropriate endpoints with the necessary pa
 `POST /api/customer/request` `requires auth`
 
 ```js
-    /api/customer/create
+    /api/customer/request
 ```
 
 - Request body
@@ -191,3 +191,27 @@ To use the API, send requests to the appropriate endpoints with the necessary pa
     }]
 }
 ```
+
+### View nearby requests.
+`POST /api/rider/view-request` `requires auth`
+
+```js
+    /api/rider/view-request
+```
+- Request body
+
+```js
+{
+    "coordinates"  : [6.653723934631674, 3.356015369516962],
+    "rideType" : "truck"
+}
+```
+
+### Accept request.
+### View nearby requests.
+`PUT /api/rider/accept` `requires auth`
+
+```js
+    /api/rider/accept/${requestId}
+```
+
