@@ -35,4 +35,6 @@ router.post(
 
 router.patch('/accept/:requestId', isAuth, riderController.acceptRequest);
 
+router.post('/complete', riderController.completeDelivery);
+
 module.exports = router;

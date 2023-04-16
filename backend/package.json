@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/IyiolaJay/dropman#readme",
   "dependencies": {
+    "africastalking": "^0.6.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "dotenv": "^16.0.3",
