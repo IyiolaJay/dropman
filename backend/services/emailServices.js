@@ -29,7 +29,6 @@ exports.sendToMail = async (mailBody) => {
     const err = new Error(error);
     err.statusCode = 500;
     throw err;
-    // next(err);
   }
 };
 
