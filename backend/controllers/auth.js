@@ -22,6 +22,9 @@ exports.createAccount = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const sendEmail = req.query.email;
+  
+  console.log(sendEmail);
+  
   let rideType;
 
   if (req.body.metaData && req.body.metaData.rideType) {
@@ -41,7 +44,9 @@ exports.createAccount = async (req, res, next) => {
     const checkUser = await User.findOne({ email: email });
 
     if (checkUser && checkUser.userType) {
-      throw new Error(`User already exists as a ${checkUser.userType}`);
+      const err = new Error(`User already exists as a ${checkUser.userType}`);
+      err.statusCode = 422;
+      throw err;
     }
 
     const Hash = await genHashedPassword(password);
@@ -72,7 +77,7 @@ exports.createAccount = async (req, res, next) => {
     }
     const createUser = await user.save();
 
-    if (sendEmail !== false) {
+    if (sendEmail !== "false") {
       const token = await createTokenHash();
 
       const userToken = new tokenModal({

@@ -2,7 +2,8 @@
 
 Dropman is an open source delivery/logistic service that handles delivery service from one location to another, as well as multiple location deliveries. With Dropman, users can request for the services deliverymen just like requesting for Uber rides.
 
-The project is organized into two major folders, backend and frontend, with each folder containing the corresponding code for its respective framework. The backend of the project is built with Express.js, while the frontend is built with React.js.
+The project is organized into two major folders, backend and frontend, with each folder containing the corresponding code for its respective framework. The backend of the project is built with Express.js, while the frontend will be built with React.js. 
+-Note the frontend is still in progress and not rolled out yet. However, you can send http requests via this [link](https://dropman-app.onrender.com) using either postman or any client service of your choice that can aid interaction with json data
 
 ### Installation
 
