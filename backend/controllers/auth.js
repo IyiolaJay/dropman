@@ -86,12 +86,13 @@ exports.createAccount = async (req, res, next) => {
       })
 
       await userToken.save();
-
+      
       const mailBody = {
         to: email,
         subject: "Welcome, Your account has been created",
         token: token,
         name: createUser.firstName + " " + createUser.lastName,
+        host : `${req.protocol}://${req.headers.host}`
       };
       await sendToMail(mailBody);
 
@@ -177,4 +178,5 @@ exports.verifyEmail = async (req, res, next) =>{
   }
 
   const verifyToken = await tokenModal.findOne({userId : userId, token : token});
+  // 
 }
